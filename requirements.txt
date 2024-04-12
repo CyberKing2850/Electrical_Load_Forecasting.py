@@ -1,0 +1,5 @@
+uvicorn==0.29.0
+beautifulsoup4==4.12.3
+fastapi==0.110.1
+motor==3.4.0
+python-dotenv==1.0.1
