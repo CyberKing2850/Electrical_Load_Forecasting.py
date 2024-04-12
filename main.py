@@ -26,7 +26,7 @@ async def cron_job():
         item_doc={"csv_str":csv_str}
         result = await collection.insert_one(item_doc)
         print({"id": str(result.inserted_id), **item_doc})
-        await asyncio.sleep(14*600)
+        await asyncio.sleep(1000)
 
 @app.get("/start_cron/")
 async def start_cron(background_tasks: BackgroundTasks):
