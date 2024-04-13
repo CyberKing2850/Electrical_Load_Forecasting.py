@@ -5,6 +5,7 @@ from motor.motor_asyncio import AsyncIOMotorClient
 from dotenv import load_dotenv
 load_dotenv()
 import os
+import time
 
 app = FastAPI()
 
@@ -17,22 +18,16 @@ client = AsyncIOMotorClient(MONGO_URI)
 db = client[DATABASE_NAME]
 collection = db[COLLECTION_NAME]
 
+@app.get("/cron_collect/")
 async def cron_job():
-    while True:
-        # Replace this with the task you want to run periodically
-        print("Running cron job...")
-        csv_str = edp.extract_data_point()
-        print(csv_str)
-        item_doc={"csv_str":csv_str}
-        result = await collection.insert_one(item_doc)
-        print({"id": str(result.inserted_id), **item_doc})
-        await asyncio.sleep(840)
-
-@app.get("/start_cron/")
-async def start_cron(background_tasks: BackgroundTasks):
-    background_tasks.add_task(cron_job)
-    return {"message": "Cron job started"}
-
+    print("Running cron job...")
+    csv_str = edp.extract_data_point()
+    print(csv_str)
+    item_doc={"csv_str":csv_str,"timestamp":time.time()}
+    result = await collection.insert_one(item_doc)
+    print({"id": str(result.inserted_id), **item_doc})
+    return "success"
+    
 
 
 if __name__ == "__main__":
